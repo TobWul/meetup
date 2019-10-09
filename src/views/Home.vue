@@ -1,18 +1,40 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div id="home">
+    <h1>Meetup</h1>
+    <input type="text" v-model="code" @input="validateCode($event)" />
+    <a
+      v-for="(group, index) in groupList"
+      :key="index"
+      :href="'/group/' + group.code"
+    >{{group.title}}</a>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
+import { mapGetters } from "vuex";
 export default {
   name: "home",
-  components: {
-    HelloWorld
+  components: {},
+  data: function() {
+    return {
+      code: ""
+    };
+  },
+  computed: {
+    ...mapGetters(["groupList"])
+  },
+  methods: {
+    validateCode: function() {
+      const response = this.$store.getters.getGroupByCode(this.code);
+      if (response)
+        this.$router.push({ name: "group", params: { group_code: this.code } });
+    }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+#home {
+  text-align: center;
+}
+</style>
