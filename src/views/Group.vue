@@ -1,30 +1,58 @@
 <template>
   <div id="group">
-    <h1>{{group.title}}</h1>
-    <p>{{group.description}}</p>
-    <div v-for="(book, index) in group.books" :key="index">
-      <h3>{{book.title}}</h3>
-      <p>{{book.author}}</p>
+    <Back />
+    <header>
+      <h1>{{group.title}}</h1>
+      <p>
+        <em>Code: {{group.code}}</em>
+      </p>
+      <p>{{group.description}}</p>
+    </header>
+    <div v-for="(book, index) in books" :key="index">
+      <Book :book="book" />
     </div>
     <br />
   </div>
 </template>
 
 <script>
+import Back from "../components/Back";
+import Book from "../components/Book";
+
 export default {
   name: "group",
+  components: {
+    Back,
+    Book
+  },
   data: function() {
     return {
-      group: {}
+      group: {},
+      books: {}
     };
   },
   created: function() {
     this.group = this.$store.getters.getGroupByCode(
       this.$route.params.group_code
     );
+    this.books = this.group.books.sort((a, b) => {
+      return a.downvotes - b.downvotes;
+    });
   }
 };
 </script>
 
 <style lang="scss" scoped>
+header {
+  margin-bottom: 2rem;
+  padding: 2rem;
+
+  h1,
+  p:first-of-type {
+    text-align: center;
+  }
+  p:first-of-type {
+    margin-bottom: 2rem;
+  }
+}
 </style>

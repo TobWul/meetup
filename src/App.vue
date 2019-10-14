@@ -6,5 +6,6 @@
 </template>
 
 <style lang="scss">
-@import "../src/scss/_typography", "../src/scss/_global";
+@import "../src/scss/css-reset", "../src/scss/_typography",
+  "../src/scss/_global";
 </style>
