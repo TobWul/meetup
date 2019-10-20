@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import Icon from "./Icon";
-import Vote from "./Vote";
-import { mapActions } from "vuex";
+import Icon from './Icon';
+import Vote from './Vote';
+import { mapActions } from 'vuex';
 export default {
-  name: "Book",
+  name: 'Book',
   components: {
     Icon,
     Vote
@@ -25,7 +25,7 @@ export default {
     book: Object
   },
   methods: {
-    ...mapActions(["vote"])
+    ...mapActions(['vote'])
   }
 };
 </script>

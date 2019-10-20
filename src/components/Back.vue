@@ -1,13 +1,13 @@
 <template>
-  <a @click="$router.go(-1)">
+  <a @click="$router.push('/home')">
     <Icon name="back" />Tilbake
   </a>
 </template>
 
 <script>
-import Icon from "./Icon";
+import Icon from './Icon';
 export default {
-  name: "Back",
+  name: 'Back',
   components: {
     Icon
   }

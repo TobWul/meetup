@@ -18,8 +18,8 @@
 
 <script>
 export default {
-  name: "MeetupThumbnail",
-  props: ["group"],
+  name: 'MeetupThumbnail',
+  props: ['group'],
   methods: {
     daysLeft: date => {
       const today = new Date();
@@ -33,7 +33,7 @@ export default {
       return new Date(date);
     },
     getCorrectMonth: month => {
-      return ("0" + (month + 1)).slice(-2);
+      return ('0' + (month + 1)).slice(-2);
     }
   }
 };

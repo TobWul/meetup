@@ -1,11 +1,13 @@
 <template>
   <div id="home">
     <header>
+      <p>{{userName}}</p>
       <p>
         <em>Next meetup</em>
       </p>
-      <h1>{{getNextMeetup.title}}</h1>
+      <!-- <h1>{{getNextMeetup.title}}</h1> -->
       <input type="text" v-model="code" @input="validateCode($event)" placeholder="Meetup code" />
+      <register-new-group :code="code" :isOpen="popupOpen" />
     </header>
     <div class="joined-groups">
       <p>
@@ -13,38 +15,61 @@
       </p>
       <br />
       <router-link
-        v-for="(group, index) in groupList"
+        v-for="(group, index) in userGroups"
         :key="index"
         :to="{name: 'group', params: {group_code: group.code}}"
       >
         <meetup-thumbnail :group="group" />
       </router-link>
     </div>
+    <button @click="logout()">Logg ut</button>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import MeetupThumbnail from "../components/MeetupThumbnail";
+import { mapGetters, mapActions } from 'vuex';
+import MeetupThumbnail from '../components/MeetupThumbnail';
+import RegisterNewGroup from '../components/RegisterNewGroup';
+import firebase from 'firebase';
 export default {
-  name: "home",
+  name: 'home',
   components: {
-    MeetupThumbnail
+    MeetupThumbnail,
+    RegisterNewGroup
   },
   data: function() {
     return {
-      code: ""
+      userName: firebase.auth().currentUser.displayName,
+      code: '',
+      popupOpen: false
     };
   },
   computed: {
-    ...mapGetters(["groupList", "getNextMeetup"])
+    ...mapGetters(['userGroups', 'selectedGroup'])
   },
   methods: {
+    ...mapActions(['updateUserGroups', 'getGroupByCode']),
     validateCode: function() {
-      const response = this.$store.getters.getGroupByCode(this.code);
-      if (response)
-        this.$router.push({ name: "group", params: { group_code: this.code } });
+      if (this.code.length === 5) {
+        this.getGroupByCode(this.code).then(response => {
+          console.log(response);
+
+          this.popupOpen = response;
+        });
+      }
+    },
+    logout: function() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.replace('login');
+        });
     }
+  },
+  created: function() {
+    this.updateUserGroups();
+    console.log(this.userGroups);
   }
 };
 </script>

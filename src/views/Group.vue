@@ -2,11 +2,11 @@
   <div id="group">
     <Back />
     <header>
-      <h1>{{group.title}}</h1>
+      <h1>{{selectedGroup.title}}</h1>
       <p>
-        <em>Code: {{group.code}}</em>
+        <em>Code: {{$route.params.group_code}}</em>
       </p>
-      <p>{{group.description}}</p>
+      <p>{{selectedGroup.description}}</p>
     </header>
     <div v-for="(book, index) in books" :key="index">
       <Book :book="book" />
@@ -16,28 +16,40 @@
 </template>
 
 <script>
-import Back from "../components/Back";
-import Book from "../components/Book";
+import Back from '../components/Back';
+import Book from '../components/Book';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "group",
+  name: 'group',
   components: {
     Back,
     Book
   },
   data: function() {
     return {
-      group: {},
+      group: {
+        title: '',
+        description: ''
+      },
       books: {}
     };
   },
+  computed: {
+    ...mapGetters(['selectedGroup'])
+  },
+  methods: {
+    ...mapActions(['getGroupByCode'])
+  },
   created: function() {
-    this.group = this.$store.getters.getGroupByCode(
-      this.$route.params.group_code
-    );
-    this.books = this.group.books.sort((a, b) => {
-      return a.downvotes - b.downvotes;
-    });
+    const code = this.$route.params.group_code;
+    if (code !== this.selectedGroup.code) {
+      this.getGroupByCode(code).then(group => {
+        console.log(group);
+
+        this.group = group;
+      });
+    }
   }
 };
 </script>
